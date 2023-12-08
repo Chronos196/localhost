@@ -68,7 +68,7 @@ function getAdminRecords($pdo, $statusFilter) {
         <select id="statusFilter" onchange="applyStatusFilter()">
             <option value="">Все записи</option>
             <option value="новый">Новые</option>
-            <option value="подтверждён">Подтвержденные</option>
+            <option value="подтверждён">Подтверженные</option>
             <option value="отменён">Отмененные</option>
         </select>
     </div>
@@ -86,8 +86,12 @@ function getAdminRecords($pdo, $statusFilter) {
             echo "<p><b>Фотограф:</b> {$record['photographer_name']}</p>";
             echo "<p><b>Клиент:</b> {$record['client_surname']} {$record['client_name']} {$record['client_patronymic']}</p>";
             echo "<p><b>Статус:</b> {$record['status']}</p>";
-            echo "<textarea id='reasonInput' placeholder='Введите причину отмены'></textarea>";
-            echo "<button onclick='cancelRecord({$record['id']})'>Отменить</button>";
+
+            // Добавляем уникальный идентификатор на основе идентификатора записи
+            $reasonInputId = "reasonInput{$record['id']}";
+
+            echo "<textarea id='{$reasonInputId}' placeholder='Введите причину отмены'></textarea>";
+            echo "<button onclick='cancelRecord({$record['id']}, \"{$reasonInputId}\")'>Отменить</button>";
             echo "<button onclick='confirmRecord({$record['id']})'>Подтвердить</button>";
             echo "</div>";
         }
@@ -108,8 +112,8 @@ function getAdminRecords($pdo, $statusFilter) {
             window.location.href = 'admin.php?status=' + encodeURIComponent(statusFilter);
         }
 
-        function cancelRecord(recordId) {
-            var reason = document.getElementById('reasonInput').value;
+        function cancelRecord(recordId, reasonInputId) {
+            var reason = document.getElementById(reasonInputId).value;
 
             if (!reason.trim()) {
                 alert('Введите причину отмены.');
