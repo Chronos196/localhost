@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $pdo->beginTransaction();
 
             // Внесите данные в таблицу records
-            $insertRecordQuery = "INSERT INTO records (user_id, photographer_id, schedule_id, price_id) VALUES (:user_id, :photographer_id, :schedule_id, :price_id)";
+            $insertRecordQuery = "INSERT INTO records (user_id, photographer_id, schedule_id, price_id, timestamp) VALUES (:user_id, :photographer_id, :schedule_id, :price_id, CURRENT_TIMESTAMP)";
             $insertRecordStatement = $pdo->prepare($insertRecordQuery);
             $insertRecordStatement->bindParam(':user_id', $userId, PDO::PARAM_INT);
             $insertRecordStatement->bindParam(':photographer_id', $photographerId, PDO::PARAM_INT);

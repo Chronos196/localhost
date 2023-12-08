@@ -25,7 +25,7 @@ function getAdminRecords($pdo, $statusFilter) {
     }
 
     // Запрос к базе данных
-    $query = "SELECT records.id, records.price_id, records.schedule_id, records.photographer_id, records.status,
+    $query = "SELECT records.id, records.price_id, records.schedule_id, records.photographer_id, records.status, records.timestamp,
                      prices.name AS tariff_name, DATE_FORMAT(schedules.start_time, '%d-%m-%Y %H:%i') AS formatted_start_time,
                      photographers.name AS photographer_name, 
                      users.name AS client_name, users.surname AS client_surname, users.patronymic AS client_patronymic
@@ -35,7 +35,7 @@ function getAdminRecords($pdo, $statusFilter) {
               JOIN photographers ON records.photographer_id = photographers.id
               JOIN users ON records.user_id = users.id
               WHERE 1 {$statusCondition}
-              ORDER BY records.id DESC";
+              ORDER BY records.timestamp DESC";
 
     $statement = $pdo->prepare($query);
 
@@ -80,6 +80,7 @@ function getAdminRecords($pdo, $statusFilter) {
         // Вывод данных
         foreach ($adminRecords as $record) {
             echo "<div class='admin-card'>";
+            echo "<p><b>Дата создания:</b> " . date('d-m-Y H:i', strtotime($record['timestamp'])) . "</p>";
             echo "<p><b>Фотосессия №:</b> {$record['id']}</p>";
             echo "<p><b>Тариф фотосессии:</b> {$record['tariff_name']}</p>";
             echo "<p><b>Дата фотосессии:</b> {$record['formatted_start_time']}</p>";
@@ -137,34 +138,4 @@ function getAdminRecords($pdo, $statusFilter) {
             data += '&status=' + encodeURIComponent(status);
             data += '&reason=' + encodeURIComponent(reason);
 
-            // Устанавливаем обработчик события при завершении запроса
-            xhr.onload = function() {
-                if (xhr.status === 200) {
-                    // Обработка успешного ответа от сервера
-                    alert('Статус записи обновлен!');
-                    location.reload();
-                } else {
-                    if (xhr.status === 401) {
-                        alert('Вы не авторизованы. Войдите или зарегистрируйтесь!');
-                    } else {
-                        alert('Произошла ошибка при обновлении статуса записи.');
-                    }
-                }
-            };
-
-            // Отправляем данные на сервер
-            xhr.send(data);
-        }
-
-        function getParameterByName(name, url) {
-            if (!url) url = window.location.href;
-            name = name.replace(/[\[\]]/g, '\\$&');
-            var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
-                results = regex.exec(url);
-            if (!results) return null;
-            if (!results[2]) return '';
-            return decodeURIComponent(results[2].replace(/\+/g, ' '));
-        }
-    </script>
-</body>
-</html>
+            // Устанавливаем обработ
