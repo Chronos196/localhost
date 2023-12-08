@@ -51,6 +51,13 @@ function getAdminRecords($pdo, $statusFilter) {
     return $records;
 }
 
+function getPhotographers($pdo) {
+    $query = "SELECT * FROM photographers";
+    $statement = $pdo->query($query);
+    $photographers = $statement->fetchAll(PDO::FETCH_ASSOC);
+    return $photographers;
+}
+
 // Обработка изменений в таблице categories
 $categories_msg = "";
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -194,6 +201,42 @@ function addCategory($pdo) {
     echo $categories_msg;
     ?>
     
+    <h3>Добавление новой фотосессии</h3>
+
+    <form action="process_add_work.php" method="post" enctype="multipart/form-data">
+        <label for="category">Категория:</label>
+        <select id="category" name="category_id" required>
+            <?php
+            // Получение списка категорий
+            $categories = getCategories($pdo);
+            foreach ($categories as $category) {
+                echo "<option value='{$category['id']}'>{$category['name']}</option>";
+            }
+            ?>
+        </select><br>
+
+        <label for="name">Название:</label>
+        <input type="text" id="name" name="name" required><br>
+
+        <label for="photoshoot_date">Дата фотосессии:</label>
+        <input type="datetime-local" id="photoshoot_date" name="photoshoot_date" required><br>
+
+        <label for="photographer">Фотограф:</label>
+        <select id="photographer" name="photographer_id" required>
+            <?php
+            // Получение списка фотографов
+            $photographers = getPhotographers($pdo);
+            foreach ($photographers as $photographer) {
+                echo "<option value='{$photographer['id']}'>{$photographer['name']}</option>";
+            }
+            ?>
+        </select><br>
+
+        <label for="image_upload">Загрузить изображения:</label>
+        <input type="file" id="image_upload" name="image_upload[]" multiple accept="image/*"><br>
+
+        <input type="submit" value="Добавить фотосессию">
+    </form>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // При загрузке страницы устанавливаем значение фильтра из параметра URL
