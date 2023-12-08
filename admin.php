@@ -53,25 +53,15 @@ function getAdminRecords($pdo, $statusFilter) {
 
 // Обработка изменений в таблице categories
 $categories_msg = "";
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'updateCategory') {
-    if (isset($_POST['category_id']) && isset($_POST['new_name'])) {
-        $categoryId = intval($_POST['category_id']);
-        $newName = $_POST['new_name'];
-
-        // Обновление данных в таблице categories
-        $queryUpdateCategory = "UPDATE categories SET name = :new_name WHERE id = :category_id";
-        $statementUpdateCategory = $pdo->prepare($queryUpdateCategory);
-        $statementUpdateCategory->bindParam(':new_name', $newName, PDO::PARAM_STR);
-        $statementUpdateCategory->bindParam(':category_id', $categoryId, PDO::PARAM_INT);
-        
-        try {
-            $statementUpdateCategory->execute();
-            $categories_msg = "Категория успешно обновлена!";
-        } catch (Exception $e) {
-            $categories_msg = "Ошибка при обновлении категории: " . $e->getMessage();
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['action'])) {
+        if ($_POST['action'] === 'updateCategory') {
+            // Обновление данных в таблице categories
+            $categories_msg = updateCategory($pdo);
+        } elseif ($_POST['action'] === 'addCategory') {
+            // Добавление новой категории
+            $categories_msg = addCategory($pdo);
         }
-    } else {
-        $categories_msg = "Некорректные данные для обновления категории.";
     }
 }
 
@@ -81,6 +71,50 @@ function getCategories($pdo) {
     $statement = $pdo->query($query);
     $categories = $statement->fetchAll(PDO::FETCH_ASSOC);
     return $categories;
+}
+
+// Функция для обновления категории
+function updateCategory($pdo) {
+    if (isset($_POST['category_id']) && isset($_POST['new_name'])) {
+        $categoryId = intval($_POST['category_id']);
+        $newName = $_POST['new_name'];
+
+        // Обновление данных в таблице categories
+        $queryUpdateCategory = "UPDATE categories SET name = :new_name WHERE id = :category_id";
+        $statementUpdateCategory = $pdo->prepare($queryUpdateCategory);
+        $statementUpdateCategory->bindParam(':new_name', $newName, PDO::PARAM_STR);
+        $statementUpdateCategory->bindParam(':category_id', $categoryId, PDO::PARAM_INT);
+
+        try {
+            $statementUpdateCategory->execute();
+            return "Категория успешно обновлена!";
+        } catch (Exception $e) {
+            return "Ошибка при обновлении категории: " . $e->getMessage();
+        }
+    } else {
+        return "Некорректные данные для обновления категории.";
+    }
+}
+
+// Функция для добавления новой категории
+function addCategory($pdo) {
+    if (isset($_POST['new_category'])) {
+        $newCategory = $_POST['new_category'];
+
+        // Добавление новой категории в таблицу categories
+        $queryAddCategory = "INSERT INTO categories (name) VALUES (:new_category)";
+        $statementAddCategory = $pdo->prepare($queryAddCategory);
+        $statementAddCategory->bindParam(':new_category', $newCategory, PDO::PARAM_STR);
+
+        try {
+            $statementAddCategory->execute();
+            return "Новая категория успешно добавлена!";
+        } catch (Exception $e) {
+            return "Ошибка при добавлении новой категории: " . $e->getMessage();
+        }
+    } else {
+        return "Некорректные данные для добавления новой категории.";
+    }
 }
 
 ?>
@@ -147,9 +181,19 @@ function getCategories($pdo) {
         <input type="hidden" name="action" value="updateCategory">
         <button type="submit">Обновить категорию</button>
     </form>
+
+    <h3>Добавление новой категории</h3>
+    <form method="post" action="">
+        <label for="newCategoryInput">Введите название новой категории:</label>
+        <input type="text" id="newCategoryInput" name="new_category" required>
+        <input type="hidden" name="action" value="addCategory">
+        <button type="submit">Добавить категорию</button>
+    </form>
+
     <?php
     echo $categories_msg;
     ?>
+    
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // При загрузке страницы устанавливаем значение фильтра из параметра URL
