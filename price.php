@@ -2,14 +2,14 @@
 include('db.php');
 include("header.php");
 
-function getPhotographerDropdown($pdo) {
+function getPhotographerDropdown($pdo, $cardId) {
     // Запрос для получения данных о фотографах
     $photographersQuery = "SELECT * FROM photographers";
     $photographersResult = $pdo->query($photographersQuery);
 
     // Строка для хранения HTML-кода выпадающего списка
     $dropdown = '<label for="photographer">Выберите фотографа:</label>';
-    $dropdown .= '<select name="photographer" class="photographer-dropdown">';
+    $dropdown .= '<select name="photographer" class="photographer-dropdown" id="photographer-dropdown-' . $cardId . '">';
 
     if ($photographersResult) {
         while ($photographer = $photographersResult->fetch(PDO::FETCH_ASSOC)) {
@@ -49,7 +49,7 @@ function getPhotographerDropdown($pdo) {
                 echo '<h3>' . $row['name'] . '</h3>';
                 echo '<p>' . nl2br($row['description']) . '</p>';
                 echo '<p>' . number_format($row['price'], 0, ',', ' ') . ' руб</p>';
-                echo getPhotographerDropdown($pdo);
+                echo getPhotographerDropdown($pdo, $row['id']);
                 echo '<button class="recordButton" onclick="redirectToRecord(' . $row['id'] . ')">Записаться</button>';
                 echo '</div>';
             }
@@ -58,7 +58,9 @@ function getPhotographerDropdown($pdo) {
     </div>
     <script>
         function redirectToRecord(priceId) {
-            var photographerId = document.querySelector('.photographer-dropdown').value;
+            // Используйте айди карточки для поиска нужного выпадающего списка
+            var cardId = priceId;
+            var photographerId = document.querySelector('#photographer-dropdown-' + cardId).value;
             
             var redirectUrl = "record.php?photographer=" + photographerId + "&price=" + priceId;
 
