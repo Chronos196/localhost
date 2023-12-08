@@ -87,3 +87,21 @@ header p {
 .portfolio-cards {
     display: flex;
 }
+
+.category-cards {
+    display: flex;
+    flex-direction: column;
+}
+
+.category-card {
+    border: solid 1px;
+}
+
+.category-card-photos {
+    display: flex;
+    flex-direction: row;
+}
+
+.category-card img {
+    max-width: 600px;
+}
