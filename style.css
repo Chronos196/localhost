@@ -50,3 +50,14 @@ header p {
     flex-direction: column;
     max-width: 350px;
 }
+
+.session-card {
+    border: solid 1px;
+    max-width: 350px;
+    margin-right: 10px;
+    padding: 5px;
+}
+
+.session-cards {
+    display: flex;
+}

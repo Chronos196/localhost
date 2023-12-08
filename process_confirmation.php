@@ -30,8 +30,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $insertRecordStatement->bindParam(':price_id', $priceId, PDO::PARAM_INT);
             $insertRecordStatement->execute();
 
-            // Измените статус в таблице schedule на 'занято'
-            $updateScheduleQuery = "UPDATE schedule SET status = 'занято' WHERE id = :schedule_id";
+            // Измените статус в таблице schedules на 'занято'
+            $updateScheduleQuery = "UPDATE schedules SET status = 'занято' WHERE id = :schedule_id";
             $updateScheduleStatement = $pdo->prepare($updateScheduleQuery);
             $updateScheduleStatement->bindParam(':schedule_id', $scheduleId, PDO::PARAM_INT);
             $updateScheduleStatement->execute();
