@@ -86,6 +86,7 @@ function getAdminRecords($pdo, $statusFilter) {
             echo "<p><b>Фотограф:</b> {$record['photographer_name']}</p>";
             echo "<p><b>Клиент:</b> {$record['client_surname']} {$record['client_name']} {$record['client_patronymic']}</p>";
             echo "<p><b>Статус:</b> {$record['status']}</p>";
+            echo "<textarea id='reasonInput' placeholder='Введите причину отмены'></textarea>";
             echo "<button onclick='cancelRecord({$record['id']})'>Отменить</button>";
             echo "<button onclick='confirmRecord({$record['id']})'>Подтвердить</button>";
             echo "</div>";
@@ -108,14 +109,21 @@ function getAdminRecords($pdo, $statusFilter) {
         }
 
         function cancelRecord(recordId) {
-            updateRecordStatus(recordId, 'отменён');
+            var reason = document.getElementById('reasonInput').value;
+
+            if (!reason.trim()) {
+                alert('Введите причину отмены.');
+                return;
+            }
+
+            updateRecordStatus(recordId, 'отменён', reason);
         }
 
         function confirmRecord(recordId) {
             updateRecordStatus(recordId, 'подтверждён');
         }
 
-        function updateRecordStatus(recordId, status) {
+        function updateRecordStatus(recordId, status, reason) {
             var xhr = new XMLHttpRequest();
             xhr.open('POST', 'process_update_status.php', true);
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -123,6 +131,7 @@ function getAdminRecords($pdo, $statusFilter) {
             // Формируем данные для отправки
             var data = 'record_id=' + encodeURIComponent(recordId);
             data += '&status=' + encodeURIComponent(status);
+            data += '&reason=' + encodeURIComponent(reason);
 
             // Устанавливаем обработчик события при завершении запроса
             xhr.onload = function() {

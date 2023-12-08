@@ -64,11 +64,12 @@ header p {
 
 .admin-cards {
     display: flex;
+    flex-wrap: wrap;
 }
 
 .admin-card {
     border: solid 1px;
-    max-width: 350px;
+    max-width: 450px;
     margin-right: 10px;
     padding: 5px;
 }
