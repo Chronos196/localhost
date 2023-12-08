@@ -68,6 +68,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif ($_POST['action'] === 'addCategory') {
             // Добавление новой категории
             $categories_msg = addCategory($pdo);
+        } elseif ($_POST['action'] === 'deleteCategory') {
+            // Удаление категории
+            $categories_msg = deleteCategory($pdo);
         }
     }
 }
@@ -85,6 +88,26 @@ function getWorks($pdo) {
     $statement = $pdo->query($query);
     $works = $statement->fetchAll(PDO::FETCH_ASSOC);
     return $works;
+}
+
+function deleteCategory($pdo) {
+    if (isset($_POST['category_id'])) {
+        $categoryId = intval($_POST['category_id']);
+
+        // Удаление категории из таблицы categories
+        $queryDeleteCategory = "DELETE FROM categories WHERE id = :category_id";
+        $statementDeleteCategory = $pdo->prepare($queryDeleteCategory);
+        $statementDeleteCategory->bindParam(':category_id', $categoryId, PDO::PARAM_INT);
+
+        try {
+            $statementDeleteCategory->execute();
+            return "Категория успешно удалена!";
+        } catch (Exception $e) {
+            return "Ошибка при удалении категории: " . $e->getMessage();
+        }
+    } else {
+        return "Некорректные данные для удаления категории.";
+    }
 }
 
 // Функция для обновления категории
@@ -203,6 +226,22 @@ function addCategory($pdo) {
         <input type="hidden" name="action" value="addCategory">
         <button type="submit">Добавить категорию</button>
     </form>
+    
+    <h3>Удаление категории</h3>
+    <form method="post" action="">
+        <label for="categoryToDelete">Выберите категорию для удаления:</label>
+        <select id="categoryToDelete" name="category_id" required>
+            <?php
+            // Получение списка категорий
+            $categories = getCategories($pdo);
+            foreach ($categories as $category) {
+                echo "<option value='{$category['id']}'>{$category['name']}</option>";
+            }
+            ?>
+        </select>
+        <input type="hidden" name="action" value="deleteCategory">
+        <button type="submit">Удалить категорию</button>
+    </form>        
 
     <?php
     echo $categories_msg;
