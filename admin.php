@@ -18,45 +18,7 @@ else {
     exit();
 }
 
-function getAdminRecords($pdo, $statusFilter) {
-    $statusCondition = '';
-    if ($statusFilter) {
-        $statusCondition = 'AND records.status = :status';
-    }
 
-    // Запрос к базе данных
-    $query = "SELECT records.id, records.price_id, records.schedule_id, records.photographer_id, records.status, records.timestamp,
-                     prices.name AS tariff_name, DATE_FORMAT(schedules.start_time, '%d-%m-%Y %H:%i') AS formatted_start_time,
-                     photographers.name AS photographer_name, 
-                     users.name AS client_name, users.surname AS client_surname, users.patronymic AS client_patronymic
-              FROM records
-              JOIN prices ON records.price_id = prices.id
-              JOIN schedules ON records.schedule_id = schedules.id
-              JOIN photographers ON records.photographer_id = photographers.id
-              JOIN users ON records.user_id = users.id
-              WHERE 1 {$statusCondition}
-              ORDER BY records.timestamp DESC";
-
-    $statement = $pdo->prepare($query);
-
-    if ($statusFilter) {
-        $statement->bindParam(':status', $statusFilter, PDO::PARAM_STR);
-    }
-
-    $statement->execute();
-
-    // Получение результатов запроса
-    $records = $statement->fetchAll(PDO::FETCH_ASSOC);
-
-    return $records;
-}
-
-function getPhotographers($pdo) {
-    $query = "SELECT * FROM photographers";
-    $statement = $pdo->query($query);
-    $photographers = $statement->fetchAll(PDO::FETCH_ASSOC);
-    return $photographers;
-}
 
 // Обработка изменений в таблице categories
 $categories_msg = "";
@@ -71,23 +33,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif ($_POST['action'] === 'deleteCategory') {
             // Удаление категории
             $categories_msg = deleteCategory($pdo);
+        } elseif ($_POST['action'] === 'addPrice') {
+            // Добавление нового тарифа
+            $price_msg = addPrice($pdo);
+        } elseif ($_POST['action'] === 'deletePrice') {
+            // Удаление тарифа
+            $price_msg = deletePrice($pdo);
         }
     }
-}
-
-// Функция для получения категорий
-function getCategories($pdo) {
-    $query = "SELECT * FROM categories";
-    $statement = $pdo->query($query);
-    $categories = $statement->fetchAll(PDO::FETCH_ASSOC);
-    return $categories;
-}
-
-function getWorks($pdo) {
-    $query = "SELECT id, name FROM works";
-    $statement = $pdo->query($query);
-    $works = $statement->fetchAll(PDO::FETCH_ASSOC);
-    return $works;
 }
 
 function deleteCategory($pdo) {
@@ -154,6 +107,67 @@ function addCategory($pdo) {
     }
 }
 
+// Функция для добавления нового тарифа
+function addPrice($pdo) {
+    if (isset($_POST['new_tariff_name']) && isset($_POST['new_tariff_price']) && isset($_POST['new_tariff_category_id'])) {
+        $priceName = $_POST['new_tariff_name'];
+        $price = floatval($_POST['new_tariff_price']);
+        $categoryId = intval($_POST['new_tariff_category_id']);
+
+        // Обработка загрузки фотографии
+        $uploadDir = 'img/price/' . $priceName . '/';
+        if (!file_exists($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
+        }
+        
+        $uploadedFile = $_FILES['new_tariff_image'];
+        $uploadedFileName = $uploadedFile['name'];
+        $targetPath = $uploadDir . $uploadedFileName;
+        
+        if (move_uploaded_file($uploadedFile['tmp_name'], $targetPath)) {
+            // Добавление нового тарифа в таблицу prices
+            $queryAddPrice = "INSERT INTO prices (name, price, category_id, photo_filename) VALUES (:price_name, :price, :category_id, :photo_filename)";
+            $statementAddPrice = $pdo->prepare($queryAddPrice);
+            $statementAddPrice->bindParam(':price_name', $priceName, PDO::PARAM_STR);
+            $statementAddPrice->bindParam(':price', $price, PDO::PARAM_STR);
+            $statementAddPrice->bindParam(':category_id', $categoryId, PDO::PARAM_INT);
+            $statementAddPrice->bindParam(':photo_filename', $targetPath, PDO::PARAM_STR);
+
+            try {
+                $statementAddPrice->execute();
+                return "Новый тариф успешно добавлен!";
+            } catch (Exception $e) {
+                return "Ошибка при добавлении нового тарифа: " . $e->getMessage();
+            }
+        } else {
+            return "Ошибка при загрузке фотографии.";
+        }
+    } else {
+        return "Некорректные данные для добавления нового тарифа.";
+    }
+}
+
+// Функция для удаления тарифа
+function deletePrice($pdo) {
+    if (isset($_POST['price_id'])) {
+        $priceId = intval($_POST['price_id']);
+
+        // Удаление тарифа из таблицы prices
+        $queryDeletePrice = "DELETE FROM prices WHERE id = :price_id";
+        $statementDeletePrice = $pdo->prepare($queryDeletePrice);
+        $statementDeletePrice->bindParam(':price_id', $priceId, PDO::PARAM_INT);
+
+        try {
+            $statementDeletePrice->execute();
+            return "Тариф успешно удален!";
+        } catch (Exception $e) {
+            return "Ошибка при удалении тарифа: " . $e->getMessage();
+        }
+    } else {
+        return "Некорректные данные для удаления тарифа.";
+    }
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -164,8 +178,9 @@ function addCategory($pdo) {
 </head>
 <body>
     <h2>
-        Управление записями
+        Панель администратора
     </h2>
+    <h3>Управление записями</h3>
     <div>
         <label for="statusFilter">Фильтр по статусу:</label>
         <select id="statusFilter" onchange="applyStatusFilter()">
@@ -299,6 +314,52 @@ function addCategory($pdo) {
     </select>
     <button type="submit">Удалить фотосессию</button>
 </form>
+<h3>Управление тарифами</h3>
+<form method="post" action="">
+    <h4>Добавление нового тарифа</h4>
+    <label for="newTariffName">Название тарифа:</label>
+    <input type="text" id="newTariffName" name="new_tariff_name" required>
+
+    <label for="newTariffPrice">Цена:</label>
+    <input type="number" id="newTariffPrice" name="new_tariff_price" step="0.01" required>
+
+    <label for="newTariffDescription">Описание:</label>
+    <textarea id="newTariffDescription" name="new_tariff_description" required></textarea>
+
+    <label for="newTariffCategory">Категория:</label>
+    <select id="newTariffCategory" name="new_tariff_category_id" required>
+        <?php
+        $categories = getCategories($pdo);
+        foreach ($categories as $category) {
+            echo "<option value='{$category['id']}'>{$category['name']}</option>";
+        }
+        ?>
+    </select>
+    <label for="newTariffImage">Фотография:</label>
+    <input type="file" id="newTariffImage" name="new_tariff_image" accept="image/*">
+        
+    <input type="hidden" name="action" value="addPrice">
+    <button type="submit">Добавить тариф</button>
+</form>
+
+    <form method="post" action="">
+        <h4>Удаление тарифа</h4>
+        <label for="tariffToDelete">Выберите тариф для удаления:</label>
+        <select id="tariffToDelete" name="price_id" required>
+            <?php
+            $prices = getPrices($pdo);
+            foreach ($prices as $price) {
+                echo "<option value='{$price['id']}'>{$price['id']} {$price['name']}</option>";
+            }
+            ?>
+        </select>
+
+        <input type="hidden" name="action" value="deletePrice">
+        <button type="submit">Удалить тариф</button>
+    </form>
+    <?php
+    echo $price_msg;
+    ?>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // При загрузке страницы устанавливаем значение фильтра из параметра URL
