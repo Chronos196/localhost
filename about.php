@@ -12,6 +12,7 @@ include("db.php");
 </head>
 <body>
     <h1>Best Memories</h1>
+    <img src="img/other/logo.png" alt="Логотип">
     <p>
         Слоган:
         Каждый снимок — шедевр.
