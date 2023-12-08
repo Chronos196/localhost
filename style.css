@@ -61,3 +61,14 @@ header p {
 .session-cards {
     display: flex;
 }
+
+.admin-cards {
+    display: flex;
+}
+
+.admin-card {
+    border: solid 1px;
+    max-width: 350px;
+    margin-right: 10px;
+    padding: 5px;
+}
