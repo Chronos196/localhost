@@ -73,3 +73,11 @@ function getWorks($pdo) {
     $works = $statement->fetchAll(PDO::FETCH_ASSOC);
     return $works;
 }
+
+function getRecentWorks($pdo, $limit = 5) {
+    $query = "SELECT id, name, description, photo_filename, category_id FROM prices ORDER BY id DESC LIMIT :limit";
+    $statement = $pdo->prepare($query);
+    $statement->bindParam(':limit', $limit, PDO::PARAM_INT);
+    $statement->execute();
+    return $statement->fetchAll(PDO::FETCH_ASSOC);
+}

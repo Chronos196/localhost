@@ -105,3 +105,13 @@ header p {
 .category-card img {
     max-width: 600px;
 }
+
+.about-photographers {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.about-photographers img {
+    max-width: 200px; 
+}
