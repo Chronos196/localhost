@@ -152,6 +152,7 @@ function getScheduleInformation($pdo, $photographerId) {
                     if (xhr.status === 200) {
                         // Обработка успешного ответа от сервера
                         alert('Запись подтверждена!');
+                        window.location.href = 'profile.php';
                     } else {
                         if (xhr.status === 401) {
                             alert('Вы не авторизованы. Войдите или зарегистрируйтесь.');

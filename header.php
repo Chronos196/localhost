@@ -25,7 +25,7 @@ if(!isset($_SESSION))
             </div>
             <div>
                 <?php if (isset($_SESSION['user_id'])): ?>
-                    <?php echo '<a href="">' . $_SESSION['name'] . '</a>' ?>
+                    <?php echo '<a href="profile.php">' . $_SESSION['name'] . '</a>' ?>
                     <a href="logout.php">Выход</a>
                 <?php else: ?>
                     <a href="login.php">Вход</a>

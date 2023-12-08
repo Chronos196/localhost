@@ -10,15 +10,52 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Получаем выбранное время из данных запроса
-    $selectedTime = $_POST['selectedTime'];
+    // Получите данные из POST-запроса
+    $userId = isset($_POST['user_id']) ? $_POST['user_id'] : null;
+    $scheduleId = isset($_POST['schedule_id']) ? $_POST['schedule_id'] : null;
+    $photographerId = isset($_POST['photographer_id']) ? $_POST['photographer_id'] : null;
+    $priceId = isset($_POST['price_id']) ? $_POST['price_id'] : null;
 
-    // Дополнительная обработка (например, обновление базы данных и т.д.)
+    // Проверьте, что все необходимые данные получены
+    if ($userId !== null && $scheduleId !== null && $photographerId !== null && $priceId !== null) {
+        try {
+            $pdo->beginTransaction();
 
-    // Отправляем успешный ответ
-    http_response_code(200);
+            // Внесите данные в таблицу records
+            $insertRecordQuery = "INSERT INTO records (user_id, photographer_id, schedule_id, price_id) VALUES (:user_id, :photographer_id, :schedule_id, :price_id)";
+            $insertRecordStatement = $pdo->prepare($insertRecordQuery);
+            $insertRecordStatement->bindParam(':user_id', $userId, PDO::PARAM_INT);
+            $insertRecordStatement->bindParam(':photographer_id', $photographerId, PDO::PARAM_INT);
+            $insertRecordStatement->bindParam(':schedule_id', $scheduleId, PDO::PARAM_INT);
+            $insertRecordStatement->bindParam(':price_id', $priceId, PDO::PARAM_INT);
+            $insertRecordStatement->execute();
+
+            // Измените статус в таблице schedule на 'занято'
+            $updateScheduleQuery = "UPDATE schedule SET status = 'занято' WHERE id = :schedule_id";
+            $updateScheduleStatement = $pdo->prepare($updateScheduleQuery);
+            $updateScheduleStatement->bindParam(':schedule_id', $scheduleId, PDO::PARAM_INT);
+            $updateScheduleStatement->execute();
+
+            // Зафиксируйте изменения
+            $pdo->commit();
+
+            // Отправьте успешный ответ
+            http_response_code(200);
+            echo 'Запись подтверждена!';
+        } catch (PDOException $e) {
+            // Если произошла ошибка, откатываем транзакцию и отправляем ошибку
+            $pdo->rollBack();
+            http_response_code(500);
+            echo 'Произошла ошибка при подтверждении записи: ' . $e->getMessage();
+        }
+    } else {
+        // Если не все данные получены, отправьте ошибку
+        http_response_code(400);
+        echo 'Недостаточно данных для подтверждения записи.';
+    }
 } else {
-    // Неверный метод запроса
-    http_response_code(400);
+    // Если запрос не является POST-запросом, отправьте ошибку
+    http_response_code(405);
+    echo 'Метод не разрешен.';
 }
 ?>
