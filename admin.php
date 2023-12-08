@@ -51,6 +51,38 @@ function getAdminRecords($pdo, $statusFilter) {
     return $records;
 }
 
+// Обработка изменений в таблице categories
+$categories_msg = "";
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'updateCategory') {
+    if (isset($_POST['category_id']) && isset($_POST['new_name'])) {
+        $categoryId = intval($_POST['category_id']);
+        $newName = $_POST['new_name'];
+
+        // Обновление данных в таблице categories
+        $queryUpdateCategory = "UPDATE categories SET name = :new_name WHERE id = :category_id";
+        $statementUpdateCategory = $pdo->prepare($queryUpdateCategory);
+        $statementUpdateCategory->bindParam(':new_name', $newName, PDO::PARAM_STR);
+        $statementUpdateCategory->bindParam(':category_id', $categoryId, PDO::PARAM_INT);
+        
+        try {
+            $statementUpdateCategory->execute();
+            $categories_msg = "Категория успешно обновлена!";
+        } catch (Exception $e) {
+            $categories_msg = "Ошибка при обновлении категории: " . $e->getMessage();
+        }
+    } else {
+        $categories_msg = "Некорректные данные для обновления категории.";
+    }
+}
+
+// Функция для получения категорий
+function getCategories($pdo) {
+    $query = "SELECT * FROM categories";
+    $statement = $pdo->query($query);
+    $categories = $statement->fetchAll(PDO::FETCH_ASSOC);
+    return $categories;
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -99,6 +131,25 @@ function getAdminRecords($pdo, $statusFilter) {
         ?>
     </div>
 
+    <h3>Изменение категорий</h3>
+    <form method="post" action="">
+        <label for="categorySelect">Выберите категорию:</label>
+        <select id="categorySelect" name="category_id">
+            <?php
+            $categories = getCategories($pdo);
+            foreach ($categories as $category) {
+                echo "<option value=\"{$category['id']}\">{$category['name']}</option>";
+            }
+            ?>
+        </select>
+        <label for="newNameInput">Введите новое название:</label>
+        <input type="text" id="newNameInput" name="new_name" required>
+        <input type="hidden" name="action" value="updateCategory">
+        <button type="submit">Обновить категорию</button>
+    </form>
+    <?php
+    echo $categories_msg;
+    ?>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // При загрузке страницы устанавливаем значение фильтра из параметра URL
