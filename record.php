@@ -115,5 +115,45 @@ function getScheduleInformation($pdo, $photographerId) {
         echo getRecordInformation($pdo);
         ?>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Находим кнопку "Подтвердить" и выпадающий список с помощью JavaScript
+            var confirmButton = document.getElementById('confirmButton');
+            var timeSelect = document.getElementById('time');
+
+            // Добавляем обработчик события клика по кнопке "Подтвердить"
+            confirmButton.addEventListener('click', function() {
+                // Получаем выбранное время из выпадающего списка
+                var selectedTime = timeSelect.value;
+
+                // Отправляем данные на сервер с использованием AJAX
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', 'process_confirmation.php', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                
+                // Формируем данные для отправки
+                var data = 'selectedTime=' + encodeURIComponent(selectedTime);
+
+                // Устанавливаем обработчик события при завершении запроса
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        // Обработка успешного ответа от сервера
+                        alert('Запись подтверждена!');
+                    } else {
+                        if (xhr.status === 401) {
+                            alert('Вы не авторизованы. Войдите или зарегистрируйтесь!')
+                        }
+                        else {
+                            alert('Произошла ошибка при подтверждении записи.');
+                        }
+                        
+                    }
+                };
+
+                // Отправляем данные на сервер
+                xhr.send(data);
+            });
+        });
+    </script>
 </body>
 </html>
