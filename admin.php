@@ -80,6 +80,13 @@ function getCategories($pdo) {
     return $categories;
 }
 
+function getWorks($pdo) {
+    $query = "SELECT id, name FROM works";
+    $statement = $pdo->query($query);
+    $works = $statement->fetchAll(PDO::FETCH_ASSOC);
+    return $works;
+}
+
 // Функция для обновления категории
 function updateCategory($pdo) {
     if (isset($_POST['category_id']) && isset($_POST['new_name'])) {
@@ -237,6 +244,22 @@ function addCategory($pdo) {
 
         <input type="submit" value="Добавить фотосессию">
     </form>
+    <h3>Удаление фотосесии</h3>
+    <form action="process_delete_work.php" method="post" onsubmit="return confirm('Вы уверены, что хотите удалить фотосессию?');">
+    <label for="workToDelete">Выберите фотосессию для удаления:</label>
+    <select id="workToDelete" name="work_id" required>
+        <?php
+        // Получение списка фотосессий из базы данных
+        $works = getWorks($pdo);
+
+        // Вывод каждой фотосессии в виде опции в выпадающем списке
+        foreach ($works as $work) {
+            echo "<option value='{$work['id']}'>{$work['name']}</option>";
+        }
+        ?>
+    </select>
+    <button type="submit">Удалить фотосессию</button>
+</form>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // При загрузке страницы устанавливаем значение фильтра из параметра URL

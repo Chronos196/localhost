@@ -86,6 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute([$category_id, $name, $photoshoot_date, $photographer_id, $image_folder]);
 
             echo 'Фотосессия успешно добавлена!';
+            echo '<a href="admin.php">Вернуться на админскую панель</a>';
         }
     }
 }
