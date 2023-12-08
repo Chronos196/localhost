@@ -18,7 +18,8 @@ function getUserRecords($pdo, $userId) {
               JOIN prices ON records.price_id = prices.id
               JOIN schedules ON records.schedule_id = schedules.id
               JOIN photographers ON records.photographer_id = photographers.id
-              WHERE records.user_id = :userId";
+              WHERE records.user_id = :userId
+              ORDER BY records.id DESC";
 
     $statement = $pdo->prepare($query);
     $statement->bindParam(':userId', $userId, PDO::PARAM_INT);
@@ -55,9 +56,39 @@ function getUserRecords($pdo, $userId) {
             echo "<p><b>Тариф фотосессии:</b> {$record['tariff_name']}</p>";
             echo "<p><b>Дата фотосессии:</b> {$record['formatted_start_time']}</p>";
             echo "<p><b>Имя и фамилия фотографа:</b> {$record['photographer_name']}</p>";
+            echo "<button onclick='deleteRecord({$record['id']})'>Удалить</button>";
             echo "</div>";
         }
         ?>
     </div>
+
+    <script>
+        function deleteRecord(recordId) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'process_delete.php', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+            // Формируем данные для отправки
+            var data = 'record_id=' + encodeURIComponent(recordId);
+
+            // Устанавливаем обработчик события при завершении запроса
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    // Обработка успешного ответа от сервера
+                    alert('Запись удалена!');
+                    location.reload();
+                } else {
+                    if (xhr.status === 401) {
+                        alert('Вы не авторизованы. Войдите или зарегистрируйтесь!');
+                    } else {
+                        alert('Произошла ошибка при удалении записи.');
+                    }
+                }
+            };
+
+            // Отправляем данные на сервер
+            xhr.send(data);
+        }
+    </script>
 </body>
 </html>

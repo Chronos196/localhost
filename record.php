@@ -80,7 +80,7 @@ function getScheduleInformation($pdo, $photographerId) {
     $scheduleInfo = "";
 
     // Получаем информацию о расписании фотографа
-    $scheduleQuery = "SELECT id, start_time, DATE_FORMAT(start_time, '%d-%m-%Y %H:%i') AS formatted_start_time, status FROM schedule WHERE photographer_id = :photographerId AND status = 'свободен'";
+    $scheduleQuery = "SELECT id, start_time, DATE_FORMAT(start_time, '%d-%m-%Y %H:%i') AS formatted_start_time, status FROM schedules WHERE photographer_id = :photographerId AND status = 'свободен'";
     $scheduleStatement = $pdo->prepare($scheduleQuery);
     $scheduleStatement->bindParam(':photographerId', $photographerId, PDO::PARAM_INT);
     $scheduleStatement->execute();
