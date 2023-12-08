@@ -138,4 +138,34 @@ function getAdminRecords($pdo, $statusFilter) {
             data += '&status=' + encodeURIComponent(status);
             data += '&reason=' + encodeURIComponent(reason);
 
-            // Устанавливаем обработ
+            // Устанавливаем обработчик события при завершении запроса
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    // Обработка успешного ответа от сервера
+                    alert('Статус записи обновлен!');
+                    location.reload();
+                } else {
+                    if (xhr.status === 401) {
+                        alert('Вы не авторизованы. Войдите или зарегистрируйтесь!');
+                    } else {
+                        alert('Произошла ошибка при обновлении статуса записи.');
+                    }
+                }
+            };
+
+            // Отправляем данные на сервер
+            xhr.send(data);
+        }
+
+        function getParameterByName(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, '\\$&');
+            var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, ' '));
+        }
+    </script>
+</body>
+</html>
