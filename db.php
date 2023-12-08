@@ -60,7 +60,6 @@ function getPrices($pdo) {
     return $prices;
 }
 
-// Функция для получения категорий
 function getCategories($pdo) {
     $query = "SELECT * FROM categories";
     $statement = $pdo->query($query);

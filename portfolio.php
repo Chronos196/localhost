@@ -4,13 +4,6 @@ session_start();
 include('db.php');
 include('header.php');
 
-function getCategories($pdo) {
-    $query = "SELECT * FROM categories";
-    $statement = $pdo->query($query);
-    $categories = $statement->fetchAll(PDO::FETCH_ASSOC);
-    return $categories;
-}
-
 function get_last_photo($pdo, $category_id) {
     $query = "SELECT w.name, w.image_folder, c.name AS category_name
               FROM works w
