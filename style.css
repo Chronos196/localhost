@@ -1,0 +1,52 @@
+nav {
+    display: flex;
+    justify-content: space-between;
+}
+
+nav a {
+    margin-right: 10px;
+}
+
+.register-form {
+    display: flex;
+    flex-direction: column;
+    max-width: 350px;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    max-width: 350px;
+}
+
+.contact-map {
+    max-width: 1000px;
+}
+
+header p {
+    display: inline;
+}
+
+.price-card img {
+    max-width: 300px;
+}
+
+.price-card {
+    border: solid 1px;
+    padding: 5px;
+    max-width: 300px;
+    display: flex;
+    flex-direction: column;
+}
+
+.price-cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.record-info {
+    display: flex;
+    flex-direction: column;
+    max-width: 350px;
+}
