@@ -67,9 +67,9 @@ function getAdminRecords($pdo, $statusFilter) {
         <label for="statusFilter">Фильтр по статусу:</label>
         <select id="statusFilter" onchange="applyStatusFilter()">
             <option value="">Все записи</option>
-            <option value="новая">Новые</option>
-            <option value="подтверждена">Подтвержденные</option>
-            <option value="отменена">Отмененные</option>
+            <option value="новый">Новые</option>
+            <option value="подтверждён">Подтвержденные</option>
+            <option value="отменён">Отмененные</option>
         </select>
     </div>
     <div class="admin-cards">
@@ -94,17 +94,25 @@ function getAdminRecords($pdo, $statusFilter) {
     </div>
 
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // При загрузке страницы устанавливаем значение фильтра из параметра URL
+            var statusFilter = getParameterByName('status');
+            if (statusFilter !== null) {
+                document.getElementById('statusFilter').value = statusFilter;
+            }
+        });
+
         function applyStatusFilter() {
             var statusFilter = document.getElementById('statusFilter').value;
             window.location.href = 'admin.php?status=' + encodeURIComponent(statusFilter);
         }
 
         function cancelRecord(recordId) {
-            updateRecordStatus(recordId, 'отменена');
+            updateRecordStatus(recordId, 'отменён');
         }
 
         function confirmRecord(recordId) {
-            updateRecordStatus(recordId, 'подтверждена');
+            updateRecordStatus(recordId, 'подтверждён');
         }
 
         function updateRecordStatus(recordId, status) {
@@ -133,6 +141,16 @@ function getAdminRecords($pdo, $statusFilter) {
 
             // Отправляем данные на сервер
             xhr.send(data);
+        }
+
+        function getParameterByName(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, '\\$&');
+            var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, ' '));
         }
     </script>
 </body>
