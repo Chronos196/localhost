@@ -156,7 +156,6 @@ nav a:hover {
 
 
 /*  ПРАЙС  */
-
 .price {
     background-image: url("img/other/background4.jpg");
 }
@@ -202,6 +201,30 @@ nav a:hover {
 }
 
 
+/*  ЗАПИСЬ  */
+
+.record-info {
+    display: flex;
+    flex-direction: column;
+    max-width: 350px;
+}
+
+.record-form {
+    font-family: "Unbounded";
+    margin-top: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.record-form button {
+    font-family: "Unbounded";
+}
+
+.record-form select {
+    font-family: "Unbounded";
+}
+
 /*  РЕГИСТРАЦИЯ  */
 .register-form {
     display: flex;
@@ -221,12 +244,6 @@ nav a:hover {
 
 header p {
     display: inline;
-}
-
-.record-info {
-    display: flex;
-    flex-direction: column;
-    max-width: 350px;
 }
 
 .session-card {

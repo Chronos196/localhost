@@ -87,6 +87,7 @@ function getScheduleInformation($pdo, $photographerId) {
 
     // Если есть свободные записи в расписании, выводим выпадающий список
     if ($scheduleRows = $scheduleStatement->fetchAll(PDO::FETCH_ASSOC)) {
+        $scheduleInfo .= '<div class="record-form">';
         $scheduleInfo .= '<label for="time">Выберите время:</label>';
         $scheduleInfo .= '<select name="time" id="time">';
         foreach ($scheduleRows as $scheduleRow) {
@@ -95,6 +96,7 @@ function getScheduleInformation($pdo, $photographerId) {
         $scheduleInfo .= '</select>';
         $scheduleInfo .= '<input type="hidden" name="schedule_id" id="schedule_id" value="">'; // Добавлено скрытое поле для schedule_id
         $scheduleInfo .= '<button id="confirmButton">Подтвердить</button>';
+        $scheduleInfo .= '<div>';
     } else {
         $scheduleInfo .= '<p>Фотограф не имеет свободных временных слотов.</p>';
     }
