@@ -109,10 +109,11 @@ function addCategory($pdo) {
 
 // Функция для добавления нового тарифа
 function addPrice($pdo) {
-    if (isset($_POST['new_tariff_name']) && isset($_POST['new_tariff_price']) && isset($_POST['new_tariff_category_id'])) {
+    if (isset($_POST['new_tariff_name']) && isset($_POST['new_tariff_price']) && isset($_POST['new_tariff_category_id']) && isset($_POST['new_tariff_description'])) {
         $priceName = $_POST['new_tariff_name'];
         $price = floatval($_POST['new_tariff_price']);
         $categoryId = intval($_POST['new_tariff_category_id']);
+        $description = $_POST['new_tariff_description'];
 
         // Обработка загрузки фотографии
         $uploadDir = 'img/price/' . $priceName . '/';
@@ -126,12 +127,13 @@ function addPrice($pdo) {
         
         if (move_uploaded_file($uploadedFile['tmp_name'], $targetPath)) {
             // Добавление нового тарифа в таблицу prices
-            $queryAddPrice = "INSERT INTO prices (name, price, category_id, photo_filename) VALUES (:price_name, :price, :category_id, :photo_filename)";
+            $queryAddPrice = "INSERT INTO prices (name, price, category_id, photo_filename, description) VALUES (:price_name, :price, :category_id, :photo_filename, :description)";
             $statementAddPrice = $pdo->prepare($queryAddPrice);
             $statementAddPrice->bindParam(':price_name', $priceName, PDO::PARAM_STR);
             $statementAddPrice->bindParam(':price', $price, PDO::PARAM_STR);
             $statementAddPrice->bindParam(':category_id', $categoryId, PDO::PARAM_INT);
             $statementAddPrice->bindParam(':photo_filename', $targetPath, PDO::PARAM_STR);
+            $statementAddPrice->bindParam(':description', $description, PDO::PARAM_STR);
 
             try {
                 $statementAddPrice->execute();
@@ -315,7 +317,7 @@ function deletePrice($pdo) {
     <button type="submit">Удалить фотосессию</button>
 </form>
 <h3>Управление тарифами</h3>
-<form method="post" action="">
+<form method="post" action="" enctype="multipart/form-data">
     <h4>Добавление нового тарифа</h4>
     <label for="newTariffName">Название тарифа:</label>
     <input type="text" id="newTariffName" name="new_tariff_name" required>
