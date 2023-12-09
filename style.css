@@ -154,6 +154,54 @@ nav a:hover {
     margin-top: 0px;
 }
 
+
+/*  ПРАЙС  */
+
+.price {
+    background-image: url("img/other/background4.jpg");
+}
+
+.price-record {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-family: "Unbounded";
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.price-record button {
+    font-family: "Unbounded";
+}
+
+.price-record select {
+    font-family: "Unbounded";
+}
+
+.price-card img {
+    max-width: 300px;
+    border-radius: 5px;
+    border: solid 1px white;
+}
+
+.price-card {
+    border: solid 1px;
+    border-radius: 10px;
+    padding: 5px;
+    max-width: 300px;
+    display: flex;
+    flex-direction: column;
+}
+
+.price-cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+
 /*  РЕГИСТРАЦИЯ  */
 .register-form {
     display: flex;
@@ -173,24 +221,6 @@ nav a:hover {
 
 header p {
     display: inline;
-}
-
-.price-card img {
-    max-width: 300px;
-}
-
-.price-card {
-    border: solid 1px;
-    padding: 5px;
-    max-width: 300px;
-    display: flex;
-    flex-direction: column;
-}
-
-.price-cards {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
 }
 
 .record-info {

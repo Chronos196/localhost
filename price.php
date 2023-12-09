@@ -31,7 +31,7 @@ function getPhotographerDropdown($pdo, $cardId) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Прайс</title>
 </head>
-<body>
+<body class="price">
     <h2>Прайс</h2>
     <div class="price-cards">
         <?php
@@ -45,12 +45,14 @@ function getPhotographerDropdown($pdo, $cardId) {
             while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
                 echo '<div class="price-card">';
                 echo '<img src="' .$row['photo_filename'] . '" alt="Пример фото">';
-                echo '<p>' . $row['category_name'] . '</p>';
+                echo '<p><i>' . $row['category_name'] . '</i></p>';
                 echo '<h3>' . $row['name'] . '</h3>';
                 echo '<p>' . nl2br($row['description']) . '</p>';
                 echo '<p>' . number_format($row['price'], 0, ',', ' ') . ' руб</p>';
+                echo '<div class="price-record">';
                 echo getPhotographerDropdown($pdo, $row['id']);
                 echo '<button class="recordButton" onclick="redirectToRecord(' . $row['id'] . ')">Записаться</button>';
+                echo '</div>';
                 echo '</div>';
             }
         } 
