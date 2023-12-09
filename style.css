@@ -225,6 +225,18 @@ nav a:hover {
     font-family: "Unbounded";
 }
 
+
+/*  КОНТАКТЫ  */
+.contact {
+    background-image: url("img/other/background5.jpg");
+    background-size: 100% auto;
+}
+
+.contact-map {
+    max-width: 1000px;
+}
+
+
 /*  РЕГИСТРАЦИЯ  */
 .register-form {
     display: flex;
@@ -233,14 +245,14 @@ nav a:hover {
 }
 
 .login-form {
+    font-family: "Unbounded";
     display: flex;
     flex-direction: column;
     max-width: 350px;
 }
 
-.contact-map {
-    max-width: 1000px;
-}
+
+
 
 header p {
     display: inline;

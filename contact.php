@@ -9,7 +9,7 @@ include("header.php");
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Контакты</title>
 </head>
-<body>
+<body class="contact">
     <h2>Контакты</h2>
     <p>Адрес: Москва, улица проспект Мира, 119, стр. 186. Мы в парке "ВДНХ".</p>
     <p>Ближайшее метро: Ботанический сад.</p>
