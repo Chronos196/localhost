@@ -283,9 +283,12 @@ nav a:hover {
     color: red;
 }
 
+
+/*  ПРОФИЛЬ  */
 .session-card {
     border: solid 1px;
-    max-width: 350px;
+    border-radius: 5px;
+    max-width: 500px;
     margin-right: 10px;
     padding: 5px;
 }
@@ -293,6 +296,11 @@ nav a:hover {
 .session-cards {
     display: flex;
 }
+
+.session-card button {
+    font-family: "Unbounded";
+}
+
 
 .admin-cards {
     display: flex;
