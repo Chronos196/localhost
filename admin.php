@@ -178,190 +178,199 @@ function deletePrice($pdo) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Панель администратора</title>
 </head>
-<body>
+<body class="admin">
     <h2>
         Панель администратора
     </h2>
-    <h3>Управление записями</h3>
-    <div>
-        <label for="statusFilter">Фильтр по статусу:</label>
-        <select id="statusFilter" onchange="applyStatusFilter()">
-            <option value="">Все записи</option>
-            <option value="новый">Новые</option>
-            <option value="подтверждён">Подтверженные</option>
-            <option value="отменён">Отмененные</option>
-        </select>
-    </div>
-    <div class="admin-cards">
-        <?php
-        $statusFilter = isset($_GET['status']) ? $_GET['status'] : '';
-        $adminRecords = getAdminRecords($pdo, $statusFilter);
-
-        // Вывод данных
-        foreach ($adminRecords as $record) {
-            echo "<div class='admin-card'>";
-            echo "<p><b>Дата создания:</b> " . date('d-m-Y H:i', strtotime($record['timestamp'])) . "</p>";
-            echo "<p><b>Фотосессия №:</b> {$record['id']}</p>";
-            echo "<p><b>Тариф фотосессии:</b> {$record['tariff_name']}</p>";
-            echo "<p><b>Дата фотосессии:</b> {$record['formatted_start_time']}</p>";
-            echo "<p><b>Фотограф:</b> {$record['photographer_name']}</p>";
-            echo "<p><b>Клиент:</b> {$record['client_surname']} {$record['client_name']} {$record['client_patronymic']}</p>";
-            echo "<p><b>Статус:</b> {$record['status']}</p>";
-
-            // Добавляем уникальный идентификатор на основе идентификатора записи
-            $reasonInputId = "reasonInput{$record['id']}";
-
-            echo "<textarea id='{$reasonInputId}' placeholder='Введите причину отмены'></textarea>";
-            echo "<button onclick='cancelRecord({$record['id']}, \"{$reasonInputId}\")'>Отменить</button>";
-            echo "<button onclick='confirmRecord({$record['id']})'>Подтвердить</button>";
-            echo "</div>";
-        }
-        ?>
-    </div>
-
-    <h3>Изменение категорий</h3>
-    <form method="post" action="">
-        <label for="categorySelect">Выберите категорию:</label>
-        <select id="categorySelect" name="category_id">
-            <?php
-            $categories = getCategories($pdo);
-            foreach ($categories as $category) {
-                echo "<option value=\"{$category['id']}\">{$category['name']}</option>";
-            }
-            ?>
-        </select>
-        <label for="newNameInput">Введите новое название:</label>
-        <input type="text" id="newNameInput" name="new_name" required>
-        <input type="hidden" name="action" value="updateCategory">
-        <button type="submit">Обновить категорию</button>
-    </form>
-
-    <h3>Добавление новой категории</h3>
-    <form method="post" action="">
-        <label for="newCategoryInput">Введите название новой категории:</label>
-        <input type="text" id="newCategoryInput" name="new_category" required>
-        <input type="hidden" name="action" value="addCategory">
-        <button type="submit">Добавить категорию</button>
-    </form>
     
-    <h3>Удаление категории</h3>
-    <form method="post" action="">
-        <label for="categoryToDelete">Выберите категорию для удаления:</label>
-        <select id="categoryToDelete" name="category_id" required>
+    <section>
+        <h2>Управление записями</h2>
+        <div>
+            <label for="statusFilter">Фильтр по статусу:</label>
+            <select id="statusFilter" onchange="applyStatusFilter()">
+                <option value="">Все записи</option>
+                <option value="новый">Новые</option>
+                <option value="подтверждён">Подтверженные</option>
+                <option value="отменён">Отмененные</option>
+            </select>
+        </div>
+        <div class="admin-cards">
             <?php
-            // Получение списка категорий
-            $categories = getCategories($pdo);
-            foreach ($categories as $category) {
-                echo "<option value='{$category['id']}'>{$category['name']}</option>";
+            $statusFilter = isset($_GET['status']) ? $_GET['status'] : '';
+            $adminRecords = getAdminRecords($pdo, $statusFilter);
+
+            // Вывод данных
+            foreach ($adminRecords as $record) {
+                echo "<div class='admin-card'>";
+                echo "<p><b>Дата создания:</b> " . date('d-m-Y H:i', strtotime($record['timestamp'])) . "</p>";
+                echo "<p><b>Фотосессия №:</b> {$record['id']}</p>";
+                echo "<p><b>Тариф фотосессии:</b> {$record['tariff_name']}</p>";
+                echo "<p><b>Дата фотосессии:</b> {$record['formatted_start_time']}</p>";
+                echo "<p><b>Фотограф:</b> {$record['photographer_name']}</p>";
+                echo "<p><b>Клиент:</b> {$record['client_surname']} {$record['client_name']} {$record['client_patronymic']}</p>";
+                echo "<p><b>Статус:</b> {$record['status']}</p>";
+
+                // Добавляем уникальный идентификатор на основе идентификатора записи
+                $reasonInputId = "reasonInput{$record['id']}";
+
+                echo "<textarea id='{$reasonInputId}' placeholder='Введите причину отмены'></textarea>";
+                echo "<button onclick='cancelRecord({$record['id']}, \"{$reasonInputId}\")'>Отменить</button>";
+                echo "<button onclick='confirmRecord({$record['id']})'>Подтвердить</button>";
+                echo "</div>";
             }
             ?>
-        </select>
-        <input type="hidden" name="action" value="deleteCategory">
-        <button type="submit">Удалить категорию</button>
-    </form>        
+        </div>
+    </section>
 
-    <?php
-    echo $categories_msg;
-    ?>
-    
-    <h3>Добавление новой фотосессии</h3>
+    <section>
+        <h2>Управление категориями</h2>
+        <h3>Изменение категорий</h3>
+        <form method="post" action="">
+            <label for="categorySelect">Выберите категорию:</label>
+            <select id="categorySelect" name="category_id">
+                <?php
+                $categories = getCategories($pdo);
+                foreach ($categories as $category) {
+                    echo "<option value=\"{$category['id']}\">{$category['name']}</option>";
+                }
+                ?>
+            </select>
+            <label for="newNameInput">Введите новое название:</label>
+            <input type="text" id="newNameInput" name="new_name" required>
+            <input type="hidden" name="action" value="updateCategory">
+            <button type="submit">Обновить категорию</button>
+        </form>
 
-    <form action="process_add_work.php" method="post" enctype="multipart/form-data">
-        <label for="category">Категория:</label>
-        <select id="category" name="category_id" required>
-            <?php
-            // Получение списка категорий
-            $categories = getCategories($pdo);
-            foreach ($categories as $category) {
-                echo "<option value='{$category['id']}'>{$category['name']}</option>";
-            }
-            ?>
-        </select><br>
+        <h3>Добавление новой категории</h3>
+        <form method="post" action="">
+            <label for="newCategoryInput">Введите название новой категории:</label>
+            <input type="text" id="newCategoryInput" name="new_category" required>
+            <input type="hidden" name="action" value="addCategory">
+            <button type="submit">Добавить категорию</button>
+        </form>
 
-        <label for="name">Название:</label>
-        <input type="text" id="name" name="name" required><br>
-
-        <label for="photoshoot_date">Дата фотосессии:</label>
-        <input type="datetime-local" id="photoshoot_date" name="photoshoot_date" required><br>
-
-        <label for="photographer">Фотограф:</label>
-        <select id="photographer" name="photographer_id" required>
-            <?php
-            // Получение списка фотографов
-            $photographers = getPhotographers($pdo);
-            foreach ($photographers as $photographer) {
-                echo "<option value='{$photographer['id']}'>{$photographer['name']}</option>";
-            }
-            ?>
-        </select><br>
-
-        <label for="image_upload">Загрузить изображения:</label>
-        <input type="file" id="image_upload" name="image_upload[]" multiple accept="image/*"><br>
-
-        <input type="submit" value="Добавить фотосессию">
-    </form>
-    <h3>Удаление фотосесии</h3>
-    <form action="process_delete_work.php" method="post" onsubmit="return confirm('Вы уверены, что хотите удалить фотосессию?');">
-    <label for="workToDelete">Выберите фотосессию для удаления:</label>
-    <select id="workToDelete" name="work_id" required>
+        <h3>Удаление категории</h3>
+        <form method="post" action="">
+            <label for="categoryToDelete">Выберите категорию для удаления:</label>
+            <select id="categoryToDelete" name="category_id" required>
+                <?php
+                // Получение списка категорий
+                $categories = getCategories($pdo);
+                foreach ($categories as $category) {
+                    echo "<option value='{$category['id']}'>{$category['name']}</option>";
+                }
+                ?>
+            </select>
+            <input type="hidden" name="action" value="deleteCategory">
+            <button type="submit">Удалить категорию</button>
+        </form>  
         <?php
-        // Получение списка фотосессий из базы данных
-        $works = getWorks($pdo);
+        echo $categories_msg;
+        ?>      
+    </section>
+    <section>
+        <h2>Управление фотосессиями</h2>
+        <h3>Добавление новой фотосессии</h3>
+        <form action="process_add_work.php" method="post" enctype="multipart/form-data">
+            <label for="category">Категория:</label>
+            <select id="category" name="category_id" required>
+                <?php
+                // Получение списка категорий
+                $categories = getCategories($pdo);
+                foreach ($categories as $category) {
+                    echo "<option value='{$category['id']}'>{$category['name']}</option>";
+                }
+                ?>
+            </select><br>
 
-        // Вывод каждой фотосессии в виде опции в выпадающем списке
-        foreach ($works as $work) {
-            echo "<option value='{$work['id']}'>{$work['name']}</option>";
-        }
-        ?>
-    </select>
-    <button type="submit">Удалить фотосессию</button>
-</form>
-<h3>Управление тарифами</h3>
-<form method="post" action="" enctype="multipart/form-data">
-    <h4>Добавление нового тарифа</h4>
-    <label for="newTariffName">Название тарифа:</label>
-    <input type="text" id="newTariffName" name="new_tariff_name" required>
+            <label for="name">Название:</label>
+            <input type="text" id="name" name="name" required><br>
 
-    <label for="newTariffPrice">Цена:</label>
-    <input type="number" id="newTariffPrice" name="new_tariff_price" step="0.01" required>
+            <label for="photoshoot_date">Дата фотосессии:</label>
+            <input type="datetime-local" id="photoshoot_date" name="photoshoot_date" required><br>
 
-    <label for="newTariffDescription">Описание:</label>
-    <textarea id="newTariffDescription" name="new_tariff_description" required></textarea>
+            <label for="photographer">Фотограф:</label>
+            <select id="photographer" name="photographer_id" required>
+                <?php
+                // Получение списка фотографов
+                $photographers = getPhotographers($pdo);
+                foreach ($photographers as $photographer) {
+                    echo "<option value='{$photographer['id']}'>{$photographer['name']}</option>";
+                }
+                ?>
+            </select><br>
 
-    <label for="newTariffCategory">Категория:</label>
-    <select id="newTariffCategory" name="new_tariff_category_id" required>
+            <label for="image_upload">Загрузить изображения:</label>
+            <input type="file" id="image_upload" name="image_upload[]" multiple accept="image/*"><br>
+
+            <input type="submit" value="Добавить фотосессию">
+            </form>
+            <h3>Удаление фотосесии</h3>
+            <form action="process_delete_work.php" method="post" onsubmit="return confirm('Вы уверены, что хотите удалить фотосессию?');">
+            <label for="workToDelete">Выберите фотосессию для удаления:</label>
+            <select id="workToDelete" name="work_id" required>
+                <?php
+                // Получение списка фотосессий из базы данных
+                $works = getWorks($pdo);
+
+                // Вывод каждой фотосессии в виде опции в выпадающем списке
+                foreach ($works as $work) {
+                    echo "<option value='{$work['id']}'>{$work['name']}</option>";
+                }
+                ?>
+            </select>
+            <button type="submit">Удалить фотосессию</button>
+        </form>
+    </section>
+
+    <section>
+        <h2>Управление тарифами</h2>
+        <form method="post" action="" enctype="multipart/form-data">
+            <h3>Добавление нового тарифа</h3>
+            <label for="newTariffName">Название тарифа:</label>
+            <input type="text" id="newTariffName" name="new_tariff_name" required>
+
+            <label for="newTariffPrice">Цена:</label>
+            <input type="number" id="newTariffPrice" name="new_tariff_price" step="0.01" required>
+
+            <label for="newTariffDescription">Описание:</label>
+            <textarea id="newTariffDescription" name="new_tariff_description" required></textarea>
+
+            <label for="newTariffCategory">Категория:</label>
+            <select id="newTariffCategory" name="new_tariff_category_id" required>
+                <?php
+                $categories = getCategories($pdo);
+                foreach ($categories as $category) {
+                    echo "<option value='{$category['id']}'>{$category['name']}</option>";
+                }
+                ?>
+            </select>
+            <label for="newTariffImage">Фотография:</label>
+            <input type="file" id="newTariffImage" name="new_tariff_image" accept="image/*">
+                
+            <input type="hidden" name="action" value="addPrice">
+            <button type="submit">Добавить тариф</button>
+        </form>
+
+        <form method="post" action="">
+            <h3>Удаление тарифа</h3>
+            <label for="tariffToDelete">Выберите тариф для удаления:</label>
+            <select id="tariffToDelete" name="price_id" required>
+                <?php
+                $prices = getPrices($pdo);
+                foreach ($prices as $price) {
+                    echo "<option value='{$price['id']}'>{$price['id']} {$price['name']}</option>";
+                }
+                ?>
+            </select>
+
+            <input type="hidden" name="action" value="deletePrice">
+            <button type="submit">Удалить тариф</button>
+        </form>
         <?php
-        $categories = getCategories($pdo);
-        foreach ($categories as $category) {
-            echo "<option value='{$category['id']}'>{$category['name']}</option>";
-        }
+        echo $price_msg;
         ?>
-    </select>
-    <label for="newTariffImage">Фотография:</label>
-    <input type="file" id="newTariffImage" name="new_tariff_image" accept="image/*">
-        
-    <input type="hidden" name="action" value="addPrice">
-    <button type="submit">Добавить тариф</button>
-</form>
-
-    <form method="post" action="">
-        <h4>Удаление тарифа</h4>
-        <label for="tariffToDelete">Выберите тариф для удаления:</label>
-        <select id="tariffToDelete" name="price_id" required>
-            <?php
-            $prices = getPrices($pdo);
-            foreach ($prices as $price) {
-                echo "<option value='{$price['id']}'>{$price['id']} {$price['name']}</option>";
-            }
-            ?>
-        </select>
-
-        <input type="hidden" name="action" value="deletePrice">
-        <button type="submit">Удалить тариф</button>
-    </form>
-    <?php
-    echo $price_msg;
-    ?>
+    </section>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // При загрузке страницы устанавливаем значение фильтра из параметра URL
