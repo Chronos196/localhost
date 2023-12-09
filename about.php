@@ -11,13 +11,15 @@ include("db.php");
     <title>О нас</title>
 </head>
 <body>
-    <h1>Best Memories</h1>
-    <img src="img/other/logo.png" alt="Логотип">
-    <p>
-        Слоган:
-        Каждый снимок — шедевр.
-        Сохраним моменты вашей жизни.
+    <div class="about-logo">
+        <img src="img/other/logo.png" alt="Логотип">
+        <h1>Best Memories</h1>
+        <p class="about-logo-slogan">
+        <i>Каждый снимок — шедевр.
+        Сохраним моменты вашей жизни.</i>
     </p>
+    </div>
+    <h2>О нас</h2>
     <p>
         Создаем уникальные фотографии, которые помогают нашим клиентам стать успешнее. 
         Мы придумываем идеи, проводим съемку, обрабатываем фотографии, и берем на себя 
@@ -47,7 +49,7 @@ include("db.php");
         Студия универсальна и подходит для каталожной и рекламной съемки, детских и семейных съемок, 
         а также съемок новорожденных, проведения мастер-классов и семинаров, а так-же видео съемок.
     </p>
-    <section id="recent-works">
+    <div class="about-slider">
         <h2>Последние работы</h2>
         <div class="slider">
             <?php
@@ -57,18 +59,17 @@ include("db.php");
                 echo "<img src='{$work['photo_filename']}' alt='{$work['name']}'>";
                 echo "<h3>{$work['name']}</h3>";
                 echo '<p>' . nl2br($work['description']) . '</p>';
-                // Добавьте другие необходимые данные о работе
                 echo "</div>";
             }
             ?>
         </div>
-    </section>
+    </div>
     <h2>Наши фотографы</h2>
     <div class="about-photographers">
         <?php
         $photographers = getPhotographers($pdo);
         foreach ($photographers as $photographer) {
-            echo "<div class='photographer'>";
+            echo "<div class='about-photographer'>";
             echo "<img src='{$photographer['photo_filename']}' alt='{$photographer['name']}'>";
             echo "<h3>{$photographer['name']}</h3>";
             echo "</div>";
@@ -77,8 +78,6 @@ include("db.php");
     </div>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
-
-    <!-- ... Ваш предыдущий HTML-код ... -->
 
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>

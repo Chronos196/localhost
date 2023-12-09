@@ -1,12 +1,93 @@
+@font-face {
+    font-family: 'Pacifico';
+    src: url('fonts/Pacifico-Regular.ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'RubikGemstones';
+    src: url('fonts/RubikGemstones-Regular.ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+@font-face {
+    font-family: 'Unbounded';
+    src: url('fonts/Unbounded-VariableFont_wght.ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/*  ГЛАВНАЯ СТРАНИЦА  */
+body {
+    background-image: url("img/other/background.jpg");
+}
+
+p {
+    font-family: "Unbounded";
+}
+
+h2 {
+    font-family: "Unbounded";
+}
+
+h3 {
+    font-family: "Unbounded";
+}
+
+a {
+    font-family: "Unbounded";
+}
+
 nav {
     display: flex;
     justify-content: space-between;
+    font-size: 25px;
+    background-color: rgba(255, 255, 255, 0.5);
+    padding: 5px;
 }
 
 nav a {
     margin-right: 10px;
+    font-family: "RubikGemstones";
+    text-decoration: none;
 }
 
+nav a:hover {
+    color: rgb(93, 96, 226);
+}
+
+.about-logo {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.about-logo img {
+    max-width: 150px;
+}
+
+.about-logo h1 {
+    font-family: "Pacifico";
+    margin-right: 20px;
+}
+
+.about-photographers {
+    display: flex;
+    flex-direction: row;
+}
+
+.about-photographers img {
+    max-width: 200px;
+}
+
+.about-photographer {
+    margin-right: 20px;
+}
+
+/*  РЕГИСТРАЦИЯ  */
 .register-form {
     display: flex;
     flex-direction: column;
@@ -104,14 +185,4 @@ header p {
 
 .category-card img {
     max-width: 600px;
-}
-
-.about-photographers {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-}
-
-.about-photographers img {
-    max-width: 200px; 
 }
