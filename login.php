@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
     <h2>Вход</h2>
     <?php 
-    echo "<p>$error_msg</p>";
+    echo "<p class='login-error'>$error_msg</p>";
     ?>
     <form method="POST" action="login.php" class="login-form">
         <label for="login">Логин:</label>
