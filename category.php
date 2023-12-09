@@ -23,9 +23,8 @@ function getPhotographerName($pdo, $photographerId) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Работы в категории</title>
 </head>
-<body>
+<body class="category">
     <?php
-    include('db.php');
 
     // Проверка, был ли передан идентификатор категории
     if (isset($_GET['category_id'])) {

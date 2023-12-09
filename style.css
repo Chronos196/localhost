@@ -46,6 +46,7 @@ nav {
     justify-content: space-between;
     font-size: 25px;
     background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 10px;
     padding: 5px;
 }
 
@@ -85,6 +86,72 @@ nav a:hover {
 
 .about-photographer {
     margin-right: 20px;
+}
+
+
+/*  Портфолио  */
+.portfolio {
+    background-image: url("img/other/background2.png");
+}
+
+.portfolio-card {
+    border: 1px solid;
+    border-radius: 10px;
+    padding: 10px;
+    max-width: 600px;
+}
+
+.portfolio-card img {
+    max-width: 600px;
+    border-radius: 5px;
+    border: solid 1px white;
+}
+
+.portfolio-cards {
+    display: flex;
+    gap: 10px;
+    padding-bottom: 10px;
+    overflow-x: auto; /* Добавляем горизонтальную прокрутку при необходимости */
+}
+
+.portfolio-card h3 {
+    margin-top: 0;
+}
+
+
+/*  КАТЕГОРИИ  */
+.category {
+    background-image: url("img/other/background3.jpg");
+}
+
+.category-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.category-card {
+    display: flex;
+    flex-direction: column;
+    border: solid 1px;
+    
+    padding: 10px;
+    overflow-x: auto; /* Добавляем горизонтальную прокрутку при необходимости */
+}
+
+.category-card-photos {
+    display: flex;
+    gap: 5px;
+}
+
+.category-card img {
+    max-width: 600px;
+    border-radius: 5px;
+    border: solid 1px white;
+}
+
+.category-card h3 {
+    margin-top: 0px;
 }
 
 /*  РЕГИСТРАЦИЯ  */
@@ -153,36 +220,4 @@ header p {
     max-width: 450px;
     margin-right: 10px;
     padding: 5px;
-}
-
-.portfolio-card {
-    border: 1px solid;
-    padding: 5px;
-    max-width: 600px;
-}
-
-.portfolio-card img {
-    max-width: 600px;
-}
-
-.portfolio-cards {
-    display: flex;
-}
-
-.category-cards {
-    display: flex;
-    flex-direction: column;
-}
-
-.category-card {
-    border: solid 1px;
-}
-
-.category-card-photos {
-    display: flex;
-    flex-direction: row;
-}
-
-.category-card img {
-    max-width: 600px;
 }

@@ -48,7 +48,7 @@ function get_last_photo_file($image_folder) {
     <title>Наши работы</title>
 </head>
 
-<body>
+<body class="portfolio">
     <h2>Категории фотосъемок</h2>
 
     <div class="portfolio-cards">
