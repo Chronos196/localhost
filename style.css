@@ -249,13 +249,11 @@ nav a:hover {
     display: flex;
     flex-direction: column;
     max-width: 350px;
+    gap: 5px;
 }
 
-
-
-
-header p {
-    display: inline;
+.login-form input {
+    font-family: "Unbounded";
 }
 
 .session-card {
